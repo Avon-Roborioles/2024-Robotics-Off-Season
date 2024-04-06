@@ -12,7 +12,7 @@ public class TestAprilTag extends LinearOpMode {
 
     private AprilTagReader aprilTag = new AprilTagReader();
 
-    
+
 
 
     @Override
