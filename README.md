@@ -1,4 +1,12 @@
-# Road Runner Quickstart
+# 2024 Off-Season Programming - AprilTag Integration
 
-Check out the [docs](https://rr.brott.dev/docs/v1-0/tuning/).
+## Goals:
+1) Learn to output useful information from AprilTags (AT)
+2) Research how to Re-localize Robot's position with AT Readings
+3) Implement Research and Testing to Team 14 Bot for Demonstration
 
+## Goal 1 - Learning to Use AprilTags
+
+## Goal 2 - Implementing Localization with AT
+
+## Goal 3 - Demonstration
