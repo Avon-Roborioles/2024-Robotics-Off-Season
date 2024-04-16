@@ -15,10 +15,10 @@ private DcMotor leftFront = null;
         leftBack = map.get(DcMotor.class,name1);
         RightFront = map.get(DcMotor.class,name2);
         RightBack = map.get(DcMotor.class,name3);
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        RightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        RightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        RightBack.setDirection(DcMotorSimple.Direction.FORWARD);
     }
     public void run_drive(Gamepad gamepad){
         double leftpower = gamepad.left_stick_y;
