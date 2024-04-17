@@ -10,6 +10,7 @@ private DcMotor leftFront = null;
     private DcMotor leftBack = null;
     private DcMotor RightFront = null;
     private DcMotor RightBack = null;
+    private double slowdrive;
     public void init_drive(HardwareMap map, String name, String name1,String name2,String name3) {
         leftFront = map.get(DcMotor.class,name);
         leftBack = map.get(DcMotor.class,name1);
@@ -20,9 +21,17 @@ private DcMotor leftFront = null;
         RightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         RightBack.setDirection(DcMotorSimple.Direction.FORWARD);
     }
-    public void run_drive(Gamepad gamepad){
-        double leftpower = gamepad.left_stick_y;
-        double rightpower = gamepad.right_stick_y;
+    public void run_drive(Gamepad gamepad) {
+        double leftstick = gamepad.left_stick_y;
+        double rightstick = gamepad.right_stick_y;
+        double leftpower = leftstick * slowdrive;
+        double rightpower = rightstick * slowdrive;
+        if (gamepad.a) {
+            slowdrive = 0.35;
+        } else{
+            slowdrive = 1;
+    }
+
         leftFront.setPower(leftpower);
         leftBack.setPower(leftpower);
         RightFront.setPower(rightpower);
