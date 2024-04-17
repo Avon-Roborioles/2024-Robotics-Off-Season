@@ -12,7 +12,7 @@ public class IntakeSubsystem15 extends SubsystemBase {
         intake = hardwareMap.get(DcMotor.class, name);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-        public void intake15(){
+        public void intake15run(){
             intake.setPower(intakeSpeed);
         }
 
