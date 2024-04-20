@@ -14,7 +14,7 @@ public class TestAprilTag extends LinearOpMode {
 
 
 
-
+    private int count = 0;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -22,8 +22,11 @@ public class TestAprilTag extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()&&!isStopRequested()) {
-
-            aprilTag.readTag();
+            count++;
+            if (count >= 1000) {
+                aprilTag.readTag();
+                count =1000;
+            }
 
         }
 

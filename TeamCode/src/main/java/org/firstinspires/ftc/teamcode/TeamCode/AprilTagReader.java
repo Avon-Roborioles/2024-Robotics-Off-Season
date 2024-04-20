@@ -35,7 +35,7 @@ public class AprilTagReader {
 
     public void initAprilTagCamera(HardwareMap hardwareMap, String webcamName, Telemetry telemetry) {
         processor = new AprilTagProcessor.Builder()
-//                .setTagLibrary(AprilTagProcessor.TagFamily.TAG_36h11)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                 .setDrawTagID(true)
                 .setDrawTagOutline(true)
                 .setDrawAxes(true)
@@ -52,7 +52,7 @@ public class AprilTagReader {
                 .setAutoStopLiveView(false)
                 .build();
 
-        vportal.resumeStreaming();///////
+
         this.telemetry = telemetry;
 
 
@@ -113,7 +113,7 @@ public class AprilTagReader {
 
 
         //This is in degrees
-        double yaw = 45;
+        double yaw = detection.ftcPose.yaw;
 
 
 
@@ -158,7 +158,7 @@ public class AprilTagReader {
         boolean telcond = telemetry == null;
         if (!telcond) {
 
-            telemetry.addLine("Bot X: "+ botX +"\nBot Y: "+botY+"\nHeading: "+ heading);
+            telemetry.addLine("Bot X: "+ botX +"\nBot Y: "+botY+"\nHeading: "+ heading+ "\nUnit: "+ detection.metadata.distanceUnit);
         }
         return toRet;
     }
@@ -167,29 +167,30 @@ public class AprilTagReader {
 
     public Twist2dDual<Time> readTag(){
 
-        vportal.resumeStreaming();
+
         ArrayList<AprilTagDetection> detections;
         detections=processor.getDetections();
         Twist2d coords = new Twist2d(
                 new Vector2d(0,0),
                 0
         );
-        first:
-        {
-            if (detections != null ) {
+
+//            if (detections != null ) {
                 for (AprilTagDetection detection : detections) {
                     if (detection.metadata != null) {
                         coords = findCoords(detections.get(0));
-                        telemetry.addData("======================", " ");
-                        telemetry.addData("X: ", coords.line.x);
-                        telemetry.addData("Y: ", coords.line.y);
-                        telemetry.addData("Heading: ", coords.angle);
+                        telemetry.addLine("======================");
+                        telemetry.addData("X", coords.line.x);
+                        telemetry.addData("Y", coords.line.y);
+                        telemetry.addData("Heading", coords.angle);
+                        telemetry.addData("ID", detection.id);
+                        telemetry.addData("Unit", detection.metadata.distanceUnit);
                         telemetry.update();
-                        break first;
+                        break;
                     }
                 }
-            }
-        }
+            //}
+
 
         Vector2d vector =coords.line;
         double heading =coords.angle;
