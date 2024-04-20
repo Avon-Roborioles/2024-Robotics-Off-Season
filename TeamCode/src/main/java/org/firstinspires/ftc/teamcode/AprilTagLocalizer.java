@@ -13,10 +13,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Comp_running_code.TestCodes.RithekAprilTag;
+import org.firstinspires.ftc.teamcode.TeamCode.AprilTagReader;
+
 
 public class AprilTagLocalizer implements Localizer{
-    private RithekAprilTag aprilTag;
+    private AprilTagReader aprilTag;
     public static ThreeDeadWheelLocalizer.Params PARAMS = new ThreeDeadWheelLocalizer.Params();
 
     public final Encoder par0, par1, perp;
@@ -47,7 +48,7 @@ public class AprilTagLocalizer implements Localizer{
         public double par1YTicks = 1639.2334322674708; // y position of the second parallel encoder (in tick units)
         public double perpXTicks = 1146.925049950169;//1076.9986; // x position of the perpendicular encoder (in tick units)
     }
-    public AprilTagLocalizer(HardwareMap hardwareMap, double inPerTick, RithekAprilTag aprilTagSensor){
+    public AprilTagLocalizer(HardwareMap hardwareMap, double inPerTick, AprilTagReader aprilTagSensor){
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
         par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "frontLeft")));
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "backRight/perp")));

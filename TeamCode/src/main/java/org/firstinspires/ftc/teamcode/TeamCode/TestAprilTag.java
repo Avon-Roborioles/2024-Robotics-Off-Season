@@ -21,13 +21,9 @@ public class TestAprilTag extends LinearOpMode {
         aprilTag.initAprilTagCamera(hardwareMap, "Webcam 1", telemetry);
 
         waitForStart();
-        while (opModeIsActive()) {
+        while (opModeIsActive()&&!isStopRequested()) {
 
-            telemetry.addData("======================", " ");
-            telemetry.addData("X: ",aprilTag.readTag().line.x.value());
-            telemetry.addData("Y: ",aprilTag.readTag().line.y.value());
-            telemetry.addData("Heading: ",aprilTag.readTag().angle.value());
-            telemetry.update();
+            aprilTag.readTag();
 
         }
 

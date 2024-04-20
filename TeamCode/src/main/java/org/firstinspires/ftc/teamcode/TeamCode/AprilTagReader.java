@@ -48,11 +48,11 @@ public class AprilTagReader {
                 .addProcessor(processor)
                 .setCameraResolution(new Size(640, 480))
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-//               .enableCameraMonitoring(true)
-                .setAutoStopLiveView(true)
+                .enableLiveView(true)
+                .setAutoStopLiveView(false)
                 .build();
 
-        vportal.stopStreaming();
+        vportal.resumeStreaming();///////
         this.telemetry = telemetry;
 
 
@@ -169,11 +169,34 @@ public class AprilTagReader {
 
         vportal.resumeStreaming();
         ArrayList<AprilTagDetection> detections;
-        do{detections=processor.getFreshDetections();}while(detections==null);
-        Twist2d coords=findCoords(detections.get(detections.size()-1));
+        detections=processor.getDetections();
+        Twist2d coords = new Twist2d(
+                new Vector2d(0,0),
+                0
+        );
+        first:
+        {
+            if (detections != null ) {
+                for (AprilTagDetection detection : detections) {
+                    if (detection.metadata != null) {
+                        coords = findCoords(detections.get(0));
+                        telemetry.addData("======================", " ");
+                        telemetry.addData("X: ", coords.line.x);
+                        telemetry.addData("Y: ", coords.line.y);
+                        telemetry.addData("Heading: ", coords.angle);
+                        telemetry.update();
+                        break first;
+                    }
+                }
+            }
+        }
+
         Vector2d vector =coords.line;
         double heading =coords.angle;
-        Twist2dDual<Time> toReturn = new Twist2dDual<Time>(
+
+
+
+        return new Twist2dDual<Time>(
                 new Vector2dDual<Time>(
                         new DualNum<Time>(new double[]{vector.y,0}),
                         new DualNum<Time>(new double[]{vector.x,0})
@@ -181,9 +204,6 @@ public class AprilTagReader {
                 new DualNum<Time>(new double[]{heading,0}
                 )
         );
-
-        vportal.stopStreaming();
-        return toReturn;
     }
 
 
