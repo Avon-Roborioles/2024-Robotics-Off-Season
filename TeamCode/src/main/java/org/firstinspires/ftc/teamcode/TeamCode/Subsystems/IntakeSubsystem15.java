@@ -13,11 +13,11 @@ public class IntakeSubsystem15 extends SubsystemBase {
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
         public void intake15run(){
-            intake.setPower(intakeSpeed);
+            intake.setPower(-intakeSpeed);
         }
 
         public void outtake15(){
-            intake.setPower(-intakeSpeed);
+            intake.setPower(intakeSpeed);
         }
 
         public void stop15(){

@@ -12,7 +12,7 @@ public class PassSubsystem15 extends SubsystemBase {
         pass.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void Pass15(){
-        pass.setPower(intakeSpeed);
+        pass.setPower(-intakeSpeed);
     }
 
     public void BackPass15(){
