@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.TeamCode.Subsystems;
 
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class PassSubsystem15 {
+public class PassSubsystem15 extends SubsystemBase {
     private final DcMotor pass;
     private final double intakeSpeed = 1;
     public PassSubsystem15(final HardwareMap hardwareMap, final String name) {
