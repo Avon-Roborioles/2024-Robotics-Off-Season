@@ -19,7 +19,7 @@ public class test_15 extends CommandOpMode {
     private IntakeSubsystem15 Intake15455;
     private PassSubsystem15 pass15455;
     private RevTouchSensor toucher1 = null;
-    private boolean touched = false;
+    private boolean touched;
 
 
         public void runTouchBackboard() {
