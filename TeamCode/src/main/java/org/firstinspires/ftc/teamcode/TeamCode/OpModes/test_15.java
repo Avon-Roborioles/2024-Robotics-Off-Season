@@ -45,12 +45,15 @@ public class test_15 extends CommandOpMode {
     }
 
     public void run() {
-        if (touched=false) {
-            new StopGetPixels(Intake15455, pass15455).execute();
+        if (touched=true) {
+            new GetPixels(Intake15455, pass15455).execute();
+            new StopGetPixels(Intake15455,pass15455).isFinished();
+
 
 
         } else {
-            new GetPixels(Intake15455,pass15455).execute();
+            new StopGetPixels(Intake15455,pass15455).execute();
+            new GetPixels(Intake15455,pass15455).isFinished();
         }
 
 
