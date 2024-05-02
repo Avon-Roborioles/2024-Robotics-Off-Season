@@ -19,19 +19,18 @@ public class test_15 extends CommandOpMode {
     private IntakeSubsystem15 Intake15455;
     private PassSubsystem15 pass15455;
     private RevTouchSensor toucher1 = null;
-    private boolean touched;
+    private boolean touched =true;
 
 
-        public void runTouchBackboard() {
-        if (toucher1.isPressed()) {
-            touched = true;
-        } else {
-            touched = false;
-        }
-    }
+
+
+
+
+
     @Override
     public void initialize() {
         gamepadB = new GamepadEx(gamepad2);
+
         Intake15455 = new IntakeSubsystem15(hardwareMap, "intake");
         pass15455 = new PassSubsystem15(hardwareMap, "path");
         toucher1 = hardwareMap.get(RevTouchSensor.class, "ts1");
@@ -42,21 +41,19 @@ public class test_15 extends CommandOpMode {
 //
 //                .whenPressed(new GetPixels(Intake15455, pass15455))
 //                .whenReleased(new StopGetPixels(Intake15455,pass15455));
-    }
-
-    public void run() {
-        if (touched=true) {
-            new GetPixels(Intake15455, pass15455).execute();
-            new StopGetPixels(Intake15455,pass15455).isFinished();
-
-
-
-        } else {
-            new StopGetPixels(Intake15455,pass15455).execute();
-            new GetPixels(Intake15455,pass15455).isFinished();
         }
 
 
-    }
 
+
+
+    @Override
+    public void run () {
+        if (toucher1.isPressed()) {
+            new GetPixels(Intake15455, pass15455).execute();
+        } else {
+            new StopGetPixels(Intake15455, pass15455).execute();
+        }
+
+    }
 }

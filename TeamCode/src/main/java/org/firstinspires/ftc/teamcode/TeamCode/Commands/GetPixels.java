@@ -21,11 +21,18 @@ public class GetPixels extends CommandBase {
         pass.Pass15();
 
     }
+
+
+
     @Override
     public boolean isFinished() {
         return true;
     }
 
 
-
+    @Override
+    public void end(boolean interrupted) {
+        intake.stop15();
+        pass.stoppass();
+    }
 }
