@@ -10,11 +10,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.TeamCode.Commands.Collectpixels;
 import org.firstinspires.ftc.teamcode.TeamCode.Commands.GetPixels;
+import org.firstinspires.ftc.teamcode.TeamCode.Commands.Score_Pixels;
 import org.firstinspires.ftc.teamcode.TeamCode.Commands.StopGetPixels;
+import org.firstinspires.ftc.teamcode.TeamCode.Commands.Stopscore_Pixels;
 import org.firstinspires.ftc.teamcode.TeamCode.Commands.liftrun;
 import org.firstinspires.ftc.teamcode.TeamCode.Commands.liftstop;
 import org.firstinspires.ftc.teamcode.TeamCode.Subsystems.IntakeSubsystem15;
 import org.firstinspires.ftc.teamcode.TeamCode.Subsystems.LiftSubsystem15;
+import org.firstinspires.ftc.teamcode.TeamCode.Subsystems.Outake_Subsystem15;
 import org.firstinspires.ftc.teamcode.TeamCode.Subsystems.PassSubsystem15;
 
 @TeleOp
@@ -23,6 +26,7 @@ public class test_15 extends CommandOpMode {
     private IntakeSubsystem15 Intake15455;
     private PassSubsystem15 pass15455;
     private LiftSubsystem15 liftSubsystem15;
+    private Outake_Subsystem15 Outake15455;
     private RevTouchSensor toucher1 = null;
     private RevTouchSensor toucher2 = null;
     private boolean touched =true;
@@ -34,13 +38,23 @@ public class test_15 extends CommandOpMode {
         Intake15455 = new IntakeSubsystem15(hardwareMap, "intake", "ts1");
         pass15455 = new PassSubsystem15(hardwareMap, "path", "ts2");
         liftSubsystem15 = new LiftSubsystem15(hardwareMap, "lift");
+        Outake15455= new Outake_Subsystem15(hardwareMap, "outCrs", "ts3");
         toucher1 = hardwareMap.get(RevTouchSensor.class, "ts1");
         toucher2 = hardwareMap.get(RevTouchSensor.class, "ts2");
 
         gamepadB.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new Collectpixels(Intake15455, pass15455))
                 .whenReleased(new StopGetPixels(Intake15455,pass15455));
+
+        gamepadB.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new liftrun(liftSubsystem15))
+                .whenReleased(new liftstop(liftSubsystem15));
+        gamepadB.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new Score_Pixels(Outake15455))
+                .whenReleased(new Stopscore_Pixels(Outake15455));
     }
+
+
 //        @Override
 //    public void run() {
 ////        if (toucher1.isPressed()) {
