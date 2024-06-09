@@ -11,6 +11,10 @@ import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import com.acmerobotics.roadrunner.Vector2dDual;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -19,9 +23,10 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
+import static java.lang.Math.*;
 
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 
 
 public class AprilTagReader {
@@ -31,6 +36,8 @@ public class AprilTagReader {
     private VisionPortal vportal;
 
     private Telemetry telemetry;
+
+    private ToggleButtonReader tester;
 
 
     public void initAprilTagCamera(HardwareMap hardwareMap, String webcamName, Telemetry telemetry) {
@@ -99,52 +106,57 @@ public class AprilTagReader {
     public Twist2d findCoords(@NonNull AprilTagDetection detection) {
         double rawX = detection.ftcPose.x;
         double rawY = detection.ftcPose.y;
-        double height = 5;
+        double height = detection.ftcPose.z;
 
         double roll =-detection.ftcPose.roll;
 
         double xReading = rawX;
-        double yReading = Math.cos(roll)*rawY;
+        double yReading = cos(roll)*rawY;
 
 
         //TODO: map the readings to the xy plane
 
-
+        boolean isNewMath = true;
 
 
         //This is in degrees
         double yaw = detection.ftcPose.yaw;
+        double botX,botY,heading,xXCoord,yYCoord,xYCoord,yXCoord;
+        if (!isNewMath) {
+
+            double xAngle;
+            if (xReading > 0) {
+                xAngle = yaw + 180;
+            } else {
+                xAngle = yaw;
+            }
+
+            double yAngle;
+            double yaw2 = yaw + 90;
+            if (yReading > 0) {
+                yAngle = yaw2 - 180;
+            } else {
+                yAngle = yaw2;
+            }
 
 
+            //first letter means the reading and the second letter means the contribution to that output
+             xXCoord = cos(toRadians(xAngle)) * xReading;
+             xYCoord = sin(toRadians(xAngle)) * xReading;
+             yXCoord = cos(toRadians(yAngle)) * yReading;
+             yYCoord = sin(toRadians(yAngle)) * yReading;
 
-        double xAngle;
-        if (xReading>0){
-            xAngle = yaw+180;
+
+             heading = yaw + 90;
         } else {
-            xAngle = yaw;
+            double angle = toRadians(yaw -90);
+             xXCoord = xReading*sin(angle);
+             xYCoord = xReading*cos(angle);
+             yXCoord=1;
+             yYCoord=1;
         }
-
-        double yAngle;
-        double yaw2=yaw+90;
-        if (yReading>0){
-            yAngle = yaw2-180;
-        } else {
-            yAngle = yaw2;
-        }
-
-
-
-        //first letter means the reading and the second letter means the contribution to that output
-        double xXCoord = Math.cos(Math.toRadians(xAngle))*xReading;
-        double xYCoord = Math.sin(Math.toRadians(xAngle))*xReading;
-        double yXCoord = Math.cos(Math.toRadians(yAngle))*yReading;
-        double yYCoord = Math.sin(Math.toRadians(yAngle))*yReading;
-
-        double botX = xXCoord + yXCoord;
-        double botY = xYCoord + yYCoord;
-        double heading = yaw + 90;
-
-
+        botX = xXCoord + yXCoord;
+        botY = xYCoord + yYCoord;
 
 
         Twist2d toRet = new Twist2d(new Vector2d(botX,botY).times(1),yaw);
@@ -152,17 +164,87 @@ public class AprilTagReader {
 
 
         double precision = 2;
-        double adjust = Math.pow(10,precision);
-        String version = "1.1";
+        double adjust = pow(10,precision);
+        String version = "1.2";
 
         boolean telcond = telemetry == null;
         if (!telcond) {
 
-            telemetry.addLine("Bot X: "+ botX +"\nBot Y: "+botY+"\nHeading: "+ heading+ "\nUnit: "+ detection.metadata.distanceUnit);
+            telemetry.addLine("Bot X: "+ botX +"\nBot Y: "+botY+"\nHeading: "+ yaw+ "\nUnit: "+ detection.metadata.distanceUnit);
         }
         return toRet;
     }
+    public Twist2d findCoords(@NonNull AprilTagDetection detection, BooleanSupplier boolSupp) {
+        double rawX = detection.ftcPose.x;
+        double rawY = detection.ftcPose.y;
+        double height = detection.ftcPose.z;
 
+        double roll =-detection.ftcPose.roll;
+
+        double xReading = rawX;
+        double yReading = cos(roll)*rawY;
+
+
+        //TODO: map the readings to the xy plane
+
+        boolean isNewMath = boolSupp.getAsBoolean();
+
+
+        //This is in degrees
+        double yaw = detection.ftcPose.yaw;
+        double botX,botY,heading,xXCoord,yYCoord,xYCoord,yXCoord;
+        if (!isNewMath) {
+
+            double xAngle;
+            if (xReading > 0) {
+                xAngle = yaw + 180;
+            } else {
+                xAngle = yaw;
+            }
+
+            double yAngle;
+            double yaw2 = yaw + 90;
+            if (yReading > 0) {
+                yAngle = yaw2 - 180;
+            } else {
+                yAngle = yaw2;
+            }
+
+
+            //first letter means the reading and the second letter means the contribution to that output
+            xXCoord = cos(toRadians(xAngle)) * xReading;
+            xYCoord = sin(toRadians(xAngle)) * xReading;
+            yXCoord = cos(toRadians(yAngle)) * yReading;
+            yYCoord = sin(toRadians(yAngle)) * yReading;
+
+
+            heading = yaw + 90;
+        } else {
+            double angle = toRadians(yaw -90);
+            xXCoord = xReading*sin(angle);
+            xYCoord = xReading*cos(angle);
+            yXCoord=1;
+            yYCoord=1;
+        }
+        botX = xXCoord + yXCoord;
+        botY = xYCoord + yYCoord;
+
+
+        Twist2d toRet = new Twist2d(new Vector2d(botX,botY).times(1),yaw);
+        //Twist2dDual<Time> t2DRet= new Twist2dDual<Time>(new Vector2dDual<Time>());
+
+
+        double precision = 2;
+        double adjust = pow(10,precision);
+        String version = "1.2";
+
+        boolean telcond = telemetry == null;
+        if (!telcond) {
+
+            telemetry.addLine("Bot X: "+ botX +"\nBot Y: "+botY+"\nHeading: "+ (yaw+90)+ "\nUnit: "+ detection.metadata.distanceUnit);
+        }
+        return toRet;
+    }
 
 
     public Twist2dDual<Time> readTag(){
@@ -206,7 +288,50 @@ public class AprilTagReader {
                 )
         );
     }
+    public Twist2dDual<Time> readTag(GamepadEx gamepadEx){
+        tester = new ToggleButtonReader(gamepadEx, GamepadKeys.Button.A);
 
+        ArrayList<AprilTagDetection> detections;
+        detections=processor.getDetections();
+        Twist2d coords = new Twist2d(
+                new Vector2d(0,0),
+                0
+        );
+
+//            if (detections != null ) {
+        for (AprilTagDetection detection : detections) {
+            if (detection.metadata != null) {
+                coords = findCoords(detection,() -> {
+
+                    return tester.getState();
+                });
+                telemetry.addLine("======================");
+                telemetry.addData("X", coords.line.x);
+                telemetry.addData("Y", coords.line.y);
+                telemetry.addData("Heading", coords.angle);
+                telemetry.addData("ID", detection.id);
+                telemetry.addData("Unit", detection.metadata.distanceUnit);
+                telemetry.update();
+                break;
+            }
+        }
+        //}
+
+
+        Vector2d vector =coords.line;
+        double heading =coords.angle;
+
+
+
+        return new Twist2dDual<Time>(
+                new Vector2dDual<Time>(
+                        new DualNum<Time>(new double[]{vector.y,0}),
+                        new DualNum<Time>(new double[]{vector.x,0})
+                ),
+                new DualNum<Time>(new double[]{heading,0}
+                )
+        );
+    }
 
     public enum AprilTag {
         ONE(1,30,0,0,0),
