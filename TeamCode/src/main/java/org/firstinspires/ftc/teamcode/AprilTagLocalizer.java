@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.TeamCode.AprilTagReader;
 
 
-public class AprilTagLocalizer implements Localizer{
+public abstract class AprilTagLocalizer implements Localizer{
     private AprilTagReader aprilTag;
     public static ThreeDeadWheelLocalizer.Params PARAMS = new ThreeDeadWheelLocalizer.Params();
 
@@ -28,6 +28,7 @@ public class AprilTagLocalizer implements Localizer{
     private Vector2dDual<Time> vecError;
 
     private double headingError;
+
 
     private Twist2dDual<Time> error = new Twist2dDual<>(
             new Vector2dDual<>(
@@ -62,29 +63,22 @@ public class AprilTagLocalizer implements Localizer{
     }
 
     @Override
-    public Twist2dDual<Time> update(){
+    public final Twist2dDual<Time> update(){
         PositionVelocityPair par0PosVel = par0.getPositionAndVelocity();
         PositionVelocityPair par1PosVel = par1.getPositionAndVelocity();
         PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
+
+        Twist2dDual<Time> reading = subUpdate();
 
         int par0PosDelta = par0PosVel.position - lastPar0Pos;
         int par1PosDelta = par1PosVel.position - lastPar1Pos;
         int perpPosDelta = perpPosVel.position - lastPerpPos;
 
         Twist2dDual<Time> twist = new Twist2dDual<>(
-                new Vector2dDual<>(
-                        new DualNum<Time>(new double[] {
-                                (PARAMS.par0YTicks * par1PosDelta - PARAMS.par1YTicks * par0PosDelta) / (PARAMS.par0YTicks - PARAMS.par1YTicks) ,
-                                (PARAMS.par0YTicks * par1PosVel.velocity - PARAMS.par1YTicks * par0PosVel.velocity) / (PARAMS.par0YTicks - PARAMS.par1YTicks) ,
-                        }).times(inPerTick),
-                        new DualNum<Time>(new double[] {
-                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks) * (par1PosDelta - par0PosDelta) + perpPosDelta),
-                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks) * (par1PosVel.velocity - par0PosVel.velocity) + perpPosVel.velocity),
-                        }).times(inPerTick)
-                ).plus(vecError),
+                reading.line.plus(vecError),
                 new DualNum<Time>(new double[] {
-                        (par0PosDelta - par1PosDelta) / (PARAMS.par0YTicks - PARAMS.par1YTicks) + headingError,
-                        (par0PosVel.velocity - par1PosVel.velocity) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                        reading.angle.value() + headingError,
+                        reading.angle.values().get(1),
                 })
         );
 
@@ -94,6 +88,8 @@ public class AprilTagLocalizer implements Localizer{
 
         return twist;
     }
+
+    public abstract Twist2dDual<Time> subUpdate();
 
     public void readAprilTag(){
         Twist2dDual<Time> reading=aprilTag.readTag();

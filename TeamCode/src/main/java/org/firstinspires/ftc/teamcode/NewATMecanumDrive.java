@@ -153,7 +153,7 @@ public final class NewATMecanumDrive {
         }
 
         @Override
-        public Twist2dDual<Time> update() {
+        public Twist2dDual<Time> subUpdate() {
             PositionVelocityPair leftFrontPosVel = leftFront.getPositionAndVelocity();
             PositionVelocityPair leftBackPosVel = leftBack.getPositionAndVelocity();
             PositionVelocityPair rightBackPosVel = rightBack.getPositionAndVelocity();
