@@ -121,7 +121,7 @@ public final class MecanumDriveAprilTag {
 
     public final IMU imu;
 
-    public final AprilTagLocalizer localizer;
+    public final Localizer localizer;
 
     public Pose2d pose;
 
